@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      /*
+              描述
+              获取 url 中的参数
+              1. 指定参数名称，返回该参数的值 或者 空字符串
+              2. 不指定参数名称，返回全部的参数对象 或者 {}
+              3. 如果存在多个同名参数，则返回数组
+              4. 不支持URLSearchParams方法
+              示例1
+              输入：
+              http://www.nowcoder.com?key=1&key=2&key=3&test=4#hehe key
+              复制
+              输出：
+              [1, 2, 3]
+            */
+
+      function getUrlParam(sUrl, sKey) {
+        let arr = [];
+        let obj = {};
+        let query = sUrl.split("?")[1].split("#")[0].split("&");
+        for (e of query) {
+          e = e.split("=");
+          let [key, value] = e;
+          if (sKey && key === sKey) {
+            arr.push(value);
+          }
+          if (!sKey) {
+            if (key in obj) {
+              obj[key] = [].concat(obj[key], value);
+            } else {
+              obj[key] = value;
+            }
+          }
+        }
+        // 判断返回类型
+        // if (!sKey) {
+        //   return obj;
+        // } else {
+        //   if (!arr.length) {
+        //     return "";
+        //   } else if (arr.length === 1) {
+        //     return arr[0].toString();
+        //   } else {
+        //     return arr;
+        //   }
+        // }
+
+        // 三元运算符判断类型
+        return !sKey
+          ? obj
+          : !arr.length
+          ? ""
+          : arr.length > 1
+          ? arr
+          : arr[0].toString();
+      }
+
+      console.log(
+        getUrlParam(
+          "http://www.nowcoder.com?key=1&key=2&key=3&test=4#hehe",
+          "key"
+        )
+      );
+      console.log(
+        getUrlParam(
+          "http://www.nowcoder.com?key=1&key=2&key=3&test=4#hehe",
+          "test"
+        )
+      );
+      console.log(
+        getUrlParam(
+          "http://www.nowcoder.com?key=1&key=2&key=3&test=4#hehe",
+          "abc"
+        )
+      );
+      console.log(
+        getUrlParam("http://www.nowcoder.com?key=1&key=2&key=3&test=4#hehe")
+      );
+
+      function foo() {
+        var a = getUrlParam(
+          "http://www.nowcoder.com?key=1&key=2&key=3&test1=4#hehe",
+          "test1"
+        );
+        console.log(a);
+        return a === "4";
+      }
+      // console.log(foo());
+
+      function bar() {
+        var a = getUrlParam(
+          "http://www.nowcoder.com?key=1&key=2&key=3&key=4&test=4#hehe",
+          "key"
+        );
+        return a.join("") === "1234";
+      }
+      // console.log(bar());
+    </script>
+  </body>
+</html>

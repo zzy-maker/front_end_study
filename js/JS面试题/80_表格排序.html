@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body,
+      html {
+        padding: 0;
+        margin: 0;
+        font-size: 14px;
+        color: #000000;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        table-layout: fixed;
+      }
+      thead {
+        background: #3d444c;
+        color: #ffffff;
+      }
+      td,
+      th {
+        border: 1px solid #e1e1e1;
+        padding: 0;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      描述
+      系统会在tbody中随机生成一份产品信息表单，如html所示。
+      请完成 sort 函数，根据参数的要求对表单所有行进行重新排序。
+      1、type为id、price或者sales，分别对应第1 ~ 3列
+      2、order为asc或者desc，asc表示升序，desc为降序
+      3、例如 sort('price', 'asc') 表示按照price列从低到高排序
+      4、所有表格内容均为数字，每一列数字均不会重复
+      5、不要使用第三方插件
+    -->
+    <table>
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>price</th>
+          <th>sales</th>
+        </tr>
+      </thead>
+      <tbody id="jsList">
+        <tr>
+          <td>1</td>
+          <td>10.0</td>
+          <td>800</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>30.0</td>
+          <td>600</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>20.5</td>
+          <td>700</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>40.5</td>
+          <td>500</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>60.5</td>
+          <td>300</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>50.0</td>
+          <td>400</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>70.0</td>
+          <td>200</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>80.5</td>
+          <td>100</td>
+        </tr>
+      </tbody>
+    </table>
+    <script>
+      function sort(type, order) {
+        //type为id、price或者sales;   asc表示升序，desc为降序
+        // 1.获取父节点
+        let tbody = document.getElementById("jsList");
+        // 2.获取数据--多少行数据
+        var len = tbody.children.length;
+        // 3.遍历获取数组
+        let domArr = [];
+        let typeNum =
+          type === "id" ? 0 : type === "price" ? 1 : type === "sales" ? 2 : "";
+        for (let i = 0; i < len; i++) {
+          domArr.push(tbody.children[i]);
+        }
+        // 4.重新排列--js sort()
+        domArr.sort((a, b) => {
+          return order === "desc"
+            ? b.children[typeNum].innerHTML - a.children[typeNum].innerHTML
+            : a.children[typeNum].innerHTML;
+        });
+        // 5.更新节点
+        domArr.forEach((item) => {
+          tbody.appendChild(item);
+        });
+      }
+      sort("id", "desc");
+      sort("price", "desc");
+      sort("sales", "asc");
+
+      // 测试
+      function test() {
+        var tbody = document.getElementById("jsList");
+        if (!tbody) {
+          return false;
+        }
+        var count = 10;
+        var type = "id";
+        var order = "asc";
+        var asc = order === "asc";
+        var result = createList(tbody, count);
+        result.sort(function (a, b) {
+          return asc ? a[type] - b[type] : b[type] - a[type];
+        });
+        sort(type, order); //
+        var isSame = !!same(result);
+        return isSame;
+        //创建模拟列表
+        function createList(tbody, count) {
+          var result = [];
+          var tr = document.createElement("Tr");
+          var td = document.createElement("td");
+          var tbody = document.getElementById("jsList");
+          var ids = random(count);
+          var prices = random(count);
+          var sales = random(count);
+          tbody.innerHTML = "";
+          for (var i = 0; i < count; i++) {
+            var trLine = tr.cloneNode();
+            var id = ids[i];
+            var price = prices[i];
+            var sale = sales[i];
+            var tdId = td.cloneNode();
+            var tdPrice = td.cloneNode();
+            var tdSales = td.cloneNode();
+            tdId.innerHTML = id;
+            tdPrice.innerHTML = price;
+            tdSales.innerHTML = sale;
+            trLine.appendChild(tdId);
+            trLine.appendChild(tdPrice);
+            trLine.appendChild(tdSales);
+            tbody.appendChild(trLine);
+            result.push({ id: id, price: price, sales: sale, tr: trLine });
+          }
+          return result;
+        }
+        //随机生成列表数据
+        function random(count) {
+          var result = [];
+          var map = {};
+          var value;
+          for (var i = 0; i < count; i++) {
+            while (!value || map[value]) {
+              value = Math.floor(Math.random() * 10000 + 1);
+            }
+            result.push(value);
+            map[value] = true;
+          }
+          return result;
+        }
+        //判断sort()函数是否正确？
+        function same(result) {
+          var trs = [].slice.call(tbody.getElementsByTagName("tr") || [], 0);
+          console.log(trs); //
+          console.log(result);
+          if (trs.length !== result.length) {
+            console.log("trs.length !== result.length");
+            return false;
+          }
+          for (var i = 0; i < count; i++) {
+            if (trs[i] !== result[i].tr) {
+              //仅仅改变innerHTML使得trs[i]和result[i].tr不相等
+              return false;
+            }
+          }
+          return true;
+        }
+      }
+    </script>
+  </body>
+</html>

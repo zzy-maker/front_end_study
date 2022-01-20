@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <p></p>
+    <script>
+      /*
+      描述
+      请补全JavaScript代码，要求将页面中的"p"标签以键名的形式保存在Map对象中，键名所对应的键值为该"p"标签的文字内容。
+    */
+      const _elementKey = () => {
+        // 补全代码
+        let pEle = document.querySelector("p");
+        // let pEle = document.getElementsByTagName("p")[0];
+        const map = new Map();
+        map.set(pEle, pEle.innerText);
+        return map;
+      };
+      console.log(_elementKey());
+    </script>
+  </body>
+</html>
